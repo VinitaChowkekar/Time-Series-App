@@ -21,7 +21,7 @@ def forecast():
     periods = int(request.form['periods'])
     model_choice = request.form['model']
 
-    df = pd.read_csv(file,encoding='latin1',on_bad_lines='skip')
+    df = pd.read_csv(file)
     df[date_col] = pd.to_datetime(df[date_col])
     df = df[[date_col, value_col]].dropna()
     df = df.set_index(date_col).asfreq('MS')
@@ -122,4 +122,4 @@ def download_chart():
 if __name__ == '__main__':
     if not os.path.exists('static'):
         os.makedirs('static')
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+    app.run(debug=True)
