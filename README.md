@@ -25,14 +25,23 @@ A simple web-based Time Series Forecasting application built using **Flask**. Up
 ## 🗂️ Project Structure
 
 .
+
 ├── app.py # Main Flask app
+
 ├── templates/
+
 │ └── index.html # UI for uploading and viewing results
+
 ├── static/
+
 │ ├── timepic.jpeg # Background image
+
 │ ├── comparison.png # Forecast comparison plot
+
 │ └── selected_model.png# Selected model's forecast plot
+
 ├── requirements.txt # Python dependencies
+
 └── README.md # Project info
 
 
