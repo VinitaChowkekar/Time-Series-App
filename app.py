@@ -21,7 +21,7 @@ def forecast():
     periods = int(request.form['periods'])
     model_choice = request.form['model']
 
-    df = pd.read_csv(file,encoding='latin1')
+    df = pd.read_csv(file,encoding='latin1', error_bad_lines=False)
     df[date_col] = pd.to_datetime(df[date_col])
     df = df[[date_col, value_col]].dropna()
     df = df.set_index(date_col).asfreq('MS')
