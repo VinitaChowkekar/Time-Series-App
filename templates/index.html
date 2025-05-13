@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Series Forecasting</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            background-image: url('/static/timepic.jpeg');
+            background-size: cover;
+            background-position: center;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: rgba(30, 30, 30, 0.8);
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        h1, h2 {
+            color: #03DAC5;
+            text-align: center;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            background-color: #2c2c2c;
+            border: none;
+            border-radius: 5px;
+            color: white;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #03DAC5;
+            color: #000;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #2a2a2a;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #333;
+        }
+        .downloads {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .downloads a {
+            color: #03DAC5;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .accuracy {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 18px;
+            color: #b2ff59;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Time Series Forecasting</h1>
+        <form action="/forecast" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <input type="text" name="date_col" placeholder="Date Column" required>
+            <input type="text" name="value_col" placeholder="Value Column" required>
+            <input type="number" name="periods" placeholder="Forecast Periods" required>
+            <select name="model" required>
+                <option value="">Select Model</option>
+                <option value="holtwinters">Holt-Winters</option>
+                <option value="arima">ARIMA</option>
+                <option value="naive">Naive Forecast</option>
+            </select>
+            <button type="submit">Generate Forecast</button>
+        </form>
+
+        {% if show_plot %}
+            <h2>Forecast Comparison</h2>
+            <img src="{{ url_for('static', filename='comparison.png') }}" alt="Comparison Plot">
+            
+            <h2>Selected Model Forecast</h2>
+            <img src="{{ url_for('static', filename='selected_model.png') }}" alt="Selected Forecast">
+        {% endif %}
+
+        {% if accuracy %}
+            <div class="accuracy">
+                Model: {{ model }} | Accuracy (MAPE): {{ accuracy }}
+            </div>
+        {% endif %}
+
+        {% if show_downloads %}
+            <div class="downloads">
+                <a href="/download_chart">Download Chart</a> |
+                <a href="/download_csv">Download Forecast CSV</a>
+            </div>
+        {% endif %}
+
+        {% if predictions %}
+            <h2>Forecasted Values</h2>
+            <table>
+                <tr><th>Date</th><th>Forecast</th></tr>
+                {% for row in predictions %}
+                    <tr><td>{{ row.ds }}</td><td>{{ row.yhat }}</td></tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+        {% if model_accuracies %}
+            <h2>Model Accuracy Comparison</h2>
+            <table>
+                <tr><th>Model</th><th>Accuracy (MAPE)</th></tr>
+                {% for model_name, acc in model_accuracies.items() %}
+                    <tr><td>{{ model_name | capitalize }}</td><td>{{ acc }}</td></tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    </div>
+</body>
+</html>
